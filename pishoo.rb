@@ -1,15 +1,15 @@
 class Pishoo < Formula
   desc "Pishoo (\"Prosperity Guardian Beast\") is a powerful proxy server optimized for HTTP/3 and end-to-end encrypted communication. Built for privacy and security scenarios, it seamlessly functions as both a forward proxy for client privacy and a reverse proxy to streamline traffic between edge networks and backend services. Its architecture is designed to safeguard your data from infringement and ensures that it can be accessed and utilized securely."
-  version "0.2.6"
+  version "0.2.7"
 
   on_arm do
-    url "https://download.genmeta.net/homebrew/pishoo_0.2.6_arm64.tar.gz"
-    sha256 "bed1707b0e5f1417f637a7eb109e33f5e14bcb2debee0d396260798bb4e6f192"
+    url "https://download.genmeta.net/homebrew/pishoo_0.2.7_arm64.tar.gz"
+    sha256 "3ab9948ab742a10fbed3ae233d8224d90e5c56e9834756ff9abf1bac832684fb"
   end
   
   on_intel do
-    url "https://download.genmeta.net/homebrew/pishoo_0.2.6_amd64.tar.gz"
-    sha256 "49ee994c3b97c2c06366f2c714221a139edb21f68acb4a6c036241f3c25c52d0"
+    url "https://download.genmeta.net/homebrew/pishoo_0.2.7_amd64.tar.gz"
+    sha256 "22e2995184fc455e69dd7fb7e0cb137afddd589f11a1e6a10ef8a340a4af8c71"
   end
 
   def install
