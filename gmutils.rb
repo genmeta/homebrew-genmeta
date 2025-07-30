@@ -1,15 +1,15 @@
 class Gmutils < Formula
   desc "Genmeta Binary Utilities"
-  version "0.3.0"
+  version "0.3.1"
 
   on_arm do
-    url "https://download.genmeta.net/homebrew/gmutils_0.3.0_arm64.tar.gz"
-    sha256 "b429aa8ed7171c6de7fcb98fd4088637c64f14775701e346b56311b4b202f931"
+    url "https://download.genmeta.net/homebrew/gmutils_0.3.1_arm64.tar.gz"
+    sha256 "72756ffd27a10665f5bd2a1b0d81454ae1b093354bad46f2ec286c2b04ce1e46"
   end
   
   on_intel do
-    url "https://download.genmeta.net/homebrew/gmutils_0.3.0_amd64.tar.gz"
-    sha256 "4ce737236de67f9742152d57505c1de8fa89a28fe899086e181657fe8e8b9a49"
+    url "https://download.genmeta.net/homebrew/gmutils_0.3.1_amd64.tar.gz"
+    sha256 "0d7b0258130a5631243ac49d75115382d09c864eee676629b9504959b1887d9d"
   end
 
   def install
