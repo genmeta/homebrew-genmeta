@@ -1,48 +1,33 @@
 class Pishoo < Formula
-  desc "Pishoo (\"Prosperity Guardian Beast\") is a powerful proxy server optimized for HTTP/3 and end-to-end encrypted communication. Built for privacy and security scenarios, it seamlessly functions as both a forward proxy for client privacy and a reverse proxy to streamline traffic between edge networks and backend services. Its architecture is designed to safeguard your data from infringement and ensures that it can be accessed and utilized securely."
-  version "0.4.2"
-  homepage "https://pishoo.genmeta.net"
+  desc "modern, secure, QUIC-powered web/proxy engine"
+  version "0.5.0"
+  license "Shareware"
 
   on_arm do
-    url "https://download.genmeta.net/homebrew/pishoo_0.4.2_arm64.tar.gz"
-    sha256 "c0966a17bd3e5708c96f749189a1ec7876587dc8108f6e54e23b1ec3171bca53"
+    url "https://download.genmeta.net/homebrew/pishoo_0.5.0-aarch64-apple-darwin.tar.gz"
+    sha256 "23a09012936610e2f19130ce13c79fb73e9e7c4f7c4ecb9e8d69b6792eb4e2cd"
   end
 
   on_intel do
-    url "https://download.genmeta.net/homebrew/pishoo_0.4.2_amd64.tar.gz"
-    sha256 "4d5ff155f479bd8fb354d33fe53ad9afba72c5bf9b4b393b76056d4069bca3fa"
+    url "https://download.genmeta.net/homebrew/pishoo_0.5.0-x86_64-apple-darwin.tar.gz"
+    sha256 "c873c4b5bf1e2a379e5fa2fb792eb348f027f374c0ff9cf87793e25f9e305d56"
   end
+
   def install
     bin.install "pishoo"
+    libexec.install "pishoo-worker"
+    libexec.install "pishoo-ssh-session"
 
     (etc/"pishoo").mkpath
     chmod 0755, etc/"pishoo"
     etc.install "pishoo.conf" => "pishoo/pishoo.conf" unless File.exist? "#{etc}/pishoo/pishoo.conf"
     etc.install "mime.types"  => "pishoo/mime.types"  unless File.exist? "#{etc}/pishoo/mime.types"
-
-    (etc/"pishoo/ssl").mkpath
-    chmod 0700, etc/"pishoo/ssl"
-
-    (etc/"pishoo/acl").mkpath
-    chmod 0700, etc/"pishoo/acl"
-    begin
-      touch etc/"pishoo/acl/rules.db"
-    rescue
-      opoo "Failed to initial access rule database at #{etc}/pishoo/acl/rules.db. If this is not the first installation, this warning can be ignored."
-    end
   end
 
   def caveats
     <<~EOS
       Configuration files are installed at:
         #{etc}/pishoo/pishoo.conf
-
-      The SSL certificates should be placed in:
-        #{etc}/pishoo/ssl/
-    
-      For the firest install, empty access rule database file created at:
-        #{etc}/pishoo/acl/rules.db
-      You can install `access` to configure firewall rules
     EOS
   end
 
@@ -57,5 +42,4 @@ class Pishoo < Formula
   test do
     system "#{bin}/pishoo", "-V"
   end
-
 end
