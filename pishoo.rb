@@ -1,17 +1,17 @@
 class Pishoo < Formula
   desc "modern, secure, QUIC-powered web/proxy engine"
-  version "0.6.0"
+  version "0.7.0"
   homepage "https://www.dhttp.net"
   license "Apache-2.0"
 
   on_arm do
-    url "https://download.dhttp.net/brew/pishoo/pishoo_0.6.0-aarch64-apple-darwin.tar.gz"
-    sha256 "d704e597d5d4b1d0e8f276ca4a916f4fe20af5ec65a280c6b4e6deea8ae43851"
+    url "https://download.dhttp.net/homebrew/pishoo_0.7.0-aarch64-apple-darwin.tar.gz"
+    sha256 "eb75dabc0a8e4b98cb81f7031bdf08c7c6682cc39cc5cb7f994aa3dcd901f981"
   end
 
   on_intel do
-    url "https://download.dhttp.net/brew/pishoo/pishoo_0.6.0-x86_64-apple-darwin.tar.gz"
-    sha256 "01befb13e9ddb131abbd51f8ab6a06335055ea7e418376fc8afca1427a9c2ae3"
+    url "https://download.dhttp.net/homebrew/pishoo_0.7.0-x86_64-apple-darwin.tar.gz"
+    sha256 "4c0fd9b4d82661a5eba62b2ee097997612ea4b4a420796b540628ec66b76bbfa"
   end
 
   def install
@@ -19,21 +19,35 @@ class Pishoo < Formula
     libexec.install "pishoo-worker"
     libexec.install "pishoo-ssh-session"
 
-    (etc/"pishoo").mkpath
-    chmod 0755, etc/"pishoo"
-    etc.install "pishoo.conf" => "pishoo/pishoo.conf" unless File.exist? "#{etc}/pishoo/pishoo.conf"
-    etc.install "mime.types"  => "pishoo/mime.types"  unless File.exist? "#{etc}/pishoo/mime.types"
+    (etc/"dhttp").mkpath
+    chmod 0755, etc/"dhttp"
+    etc.install "pishoo.conf" => "dhttp/pishoo.conf" unless File.exist? "#{etc}/dhttp/pishoo.conf"
+    etc.install "mime.types"  => "dhttp/mime.types"  unless File.exist? "#{etc}/dhttp/mime.types"
+  end
+
+  def post_install
+    return if system("/usr/bin/dscl", ".", "-read", "/Groups/pishoo", out: File::NULL, err: File::NULL)
+
+    if Process.uid.zero?
+      system "/usr/sbin/dseditgroup", "-o", "create", "pishoo"
+    else
+      opoo "pishoo group was not found; create it with: sudo dseditgroup -o create pishoo"
+    end
   end
 
   def caveats
     <<~EOS
       Configuration files are installed at:
-        #{etc}/pishoo/pishoo.conf
+        #{etc}/dhttp/pishoo.conf
+
+      In default global-home mode, missing workers/groups makes pishoo load users in the pishoo group.
+      If the pishoo group was not created automatically, run:
+        sudo dseditgroup -o create pishoo
     EOS
   end
 
   service do
-    run [opt_bin/"pishoo", "-c", etc/"pishoo/pishoo.conf"]
+    run [opt_bin/"pishoo"]
     keep_alive true
     log_path var/"log/pishoo.log"
     error_log_path var/"log/pishoo.error.log"
