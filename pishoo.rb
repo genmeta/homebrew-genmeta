@@ -1,17 +1,17 @@
 class Pishoo < Formula
   desc "modern, secure, QUIC-powered web/proxy engine"
-  version "0.7.0"
+  version "0.8.0"
   homepage "https://www.dhttp.net"
   license "Apache-2.0"
 
   on_arm do
-    url "https://download.dhttp.net/homebrew/pishoo_0.7.0-aarch64-apple-darwin.tar.gz"
-    sha256 "eb75dabc0a8e4b98cb81f7031bdf08c7c6682cc39cc5cb7f994aa3dcd901f981"
+    url "https://download.dhttp.net/homebrew/stable/pishoo_0.8.0-aarch64-apple-darwin.tar.gz"
+    sha256 "8c33d9c1f14ef35b8de477cc27444ab89ef8ad48d05f4a887d42bbdf2886b1e1"
   end
 
   on_intel do
-    url "https://download.dhttp.net/homebrew/pishoo_0.7.0-x86_64-apple-darwin.tar.gz"
-    sha256 "4c0fd9b4d82661a5eba62b2ee097997612ea4b4a420796b540628ec66b76bbfa"
+    url "https://download.dhttp.net/homebrew/stable/pishoo_0.8.0-x86_64-apple-darwin.tar.gz"
+    sha256 "6b75bc706129519cc252d6a56445bf6bfc50da24feab2a255b6062c0b7828334"
   end
 
   def install
@@ -19,20 +19,11 @@ class Pishoo < Formula
     libexec.install "pishoo-worker"
     libexec.install "pishoo-ssh-session"
 
+
     (etc/"dhttp").mkpath
     chmod 0755, etc/"dhttp"
     etc.install "pishoo.conf" => "dhttp/pishoo.conf" unless File.exist? "#{etc}/dhttp/pishoo.conf"
     etc.install "mime.types"  => "dhttp/mime.types"  unless File.exist? "#{etc}/dhttp/mime.types"
-  end
-
-  def post_install
-    return if system("/usr/bin/dscl", ".", "-read", "/Groups/pishoo", out: File::NULL, err: File::NULL)
-
-    if Process.uid.zero?
-      system "/usr/sbin/dseditgroup", "-o", "create", "pishoo"
-    else
-      opoo "pishoo group was not found; create it with: sudo dseditgroup -o create pishoo"
-    end
   end
 
   def caveats
@@ -40,9 +31,10 @@ class Pishoo < Formula
       Configuration files are installed at:
         #{etc}/dhttp/pishoo.conf
 
-      In default global-home mode, missing workers/groups makes pishoo load users in the pishoo group.
-      If the pishoo group was not created automatically, run:
-        sudo dseditgroup -o create pishoo
+      On macOS, default global-home mode loads worker users from the existing _www group.
+      This formula does not create or modify system groups. To opt the current user into
+      default pishoo worker discovery, run:
+        sudo dseditgroup -o edit -a "$USER" -t user _www
     EOS
   end
 
